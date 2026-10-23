@@ -1,0 +1,1170 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>متابع القرآن والصلاة - رفيقك اليومي</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cairo -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <!-- FontAwesome Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: "#f0fdf4",
+                100: "#dcfce7",
+                500: "#22c55e",
+                600: "#16a34a",
+                700: "#15803d",
+                800: "#166534",
+                900: "#14532d",
+              },
+              accent: {
+                gold: "#d97706",
+                goldLight: "#fef3c7",
+              },
+            },
+            fontFamily: {
+              cairo: ["Cairo", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Cairo", sans-serif;
+      }
+      .fade-in {
+        animation: fadeIn 0.3s ease-in-out;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(4px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .tab-btn-active {
+        background-color: #166534 !important;
+        color: #ffffff !important;
+        border-color: #16a34a !important;
+      }
+    </style>
+  </head>
+  <body class="bg-slate-50 text-slate-800 min-h-screen pb-16">
+    <!-- Header -->
+    <header class="bg-brand-800 text-white shadow-lg sticky top-0 z-50">
+      <div
+        class="max-w-5xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-2"
+      >
+        <div class="flex items-center space-x-3 space-x-reverse">
+          <i class="fa-solid me-2 fa-quran text-accent-gold text-2xl"></i>
+          <div>
+            <h1 class="text-xl font-bold">متابع القرآن والصلاة</h1>
+            <p
+              id="hijri-date-display"
+              class="text-xs text-brand-100 font-semibold"
+            >
+              جاري تحميل التاريخ الهجري...
+            </p>
+          </div>
+        </div>
+
+        <!-- Badges -->
+        <div class="flex items-center gap-3 text-xs md:text-sm">
+          <div
+            id="ramadan-badge"
+            class="hidden bg-amber-500/30 text-amber-200 border border-amber-400 px-3 py-1 rounded-full font-bold flex items-center gap-1"
+          >
+            <i class="fa-solid fa-moon"></i> شهر رمضان المبارك
+          </div>
+          <div
+            class="bg-brand-900/60 px-3 py-1.5 rounded-full border border-brand-700 flex items-center gap-1.5"
+          >
+            <i class="fa-solid fa-fire text-amber-400"></i>
+            <span
+              >سلسلة الأيام:
+              <strong id="streak-counter" class="text-amber-300">0</strong>
+              يوم</span
+            >
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 py-6 space-y-6">
+      <!-- Dynamic Motivation Quote Banner -->
+      <div
+        class="bg-gradient-to-r from-amber-500/10 via-brand-500/10 to-amber-500/10 border border-amber-200 rounded-2xl p-4 shadow-sm text-center relative overflow-hidden"
+      >
+        <div class="relative z-10">
+          <span
+            class="inline-block px-3 py-0.5 bg-amber-100 text-amber-800 text-[11px] font-bold rounded-full mb-1"
+          >
+            <i class="fa-solid fa-lightbulb me-1"></i> إلهام وتذكير اليوم
+          </span>
+          <blockquote
+            id="quote-text"
+            class="text-base md:text-lg font-bold text-slate-800 my-1"
+          >
+            "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ"
+          </blockquote>
+          <p id="quote-sub" class="text-[11px] text-slate-500 font-semibold">
+            حديث شريف - رواه البخاري
+          </p>
+          <button
+            onclick="rotateQuote()"
+            class="mt-2 text-xs font-bold text-brand-700 hover:text-brand-900 underline transition"
+          >
+            <i class="fa-solid fa-rotate me-1"></i> آية / تذكير آخر 🔄
+          </button>
+        </div>
+      </div>
+
+      <!-- Friday Kahf Banner -->
+      <div
+        id="friday-banner"
+        class="hidden bg-emerald-700 text-white rounded-2xl p-4 shadow-md flex flex-wrap justify-between items-center gap-3"
+      >
+        <div class="flex items-center gap-3">
+          <div class="bg-white/20 p-2.5 rounded-xl text-xl">
+            <i class="fa-solid fa-mosque"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm">
+              اليوم الجمعة - نُور ما بين الجمعتين ✨
+            </h3>
+            <p class="text-xs text-emerald-100">
+              تم تعطيل الحفظ الجديد تلقائياً والتركيز على مراجعة سور الأسبوع
+              الشاملة + قراءة سورة الكهف.
+            </p>
+          </div>
+        </div>
+        <button
+          onclick="toggleKahfDone()"
+          id="kahf-btn"
+          class="bg-amber-400 hover:bg-amber-300 text-amber-950 font-bold px-4 py-2 rounded-xl text-xs transition"
+        >
+          <i class="fa-solid fa-check me-1"></i> أتممت قراءة الكهف اليوم
+        </button>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div
+        class="flex flex-wrap gap-2 border-b border-slate-200 pb-2 text-sm font-bold"
+      >
+        <button
+          onclick="switchTab('tab-quran')"
+          id="btn-tab-quran"
+          class="tab-btn-active py-2.5 px-4 rounded-xl border border-slate-300 transition"
+        >
+          <i class="fa-solid fa-book-open me-1.5"></i> ورد القرآن والمراجعة
+        </button>
+        <button
+          onclick="switchTab('tab-prayer')"
+          id="btn-tab-prayer"
+          class="bg-white hover:bg-slate-100 text-slate-700 py-2.5 px-4 rounded-xl border border-slate-300 transition"
+        >
+          <i class="fa-solid fa-person-praying me-1.5"></i> الصلوات والسنن
+          الراتبة
+        </button>
+        <button
+          onclick="switchTab('tab-report')"
+          id="btn-tab-report"
+          class="bg-white hover:bg-slate-100 text-slate-700 py-2.5 px-4 rounded-xl border border-slate-300 transition"
+        >
+          <i class="fa-solid fa-chart-line me-1.5"></i> التقرير الأسبوعي
+        </button>
+        <button
+          onclick="switchTab('tab-settings')"
+          id="btn-tab-settings"
+          class="bg-white hover:bg-slate-100 text-slate-700 py-2.5 px-4 rounded-xl border border-slate-300 transition"
+        >
+          <i class="fa-solid fa-sliders me-1.5"></i> الإعدادات
+        </button>
+      </div>
+
+      <!-- TAB 1: QURAN & REVIEW -->
+      <div id="tab-quran" class="space-y-6 fade-in">
+        <!-- Rest / Exam Freeze -->
+        <div
+          class="bg-slate-100 border border-slate-200 rounded-xl p-3.5 flex flex-wrap justify-between items-center gap-3"
+        >
+          <div>
+            <h4 class="font-bold text-xs text-slate-700">
+              عندك امتحانات أو ضغط جامعة؟
+            </h4>
+            <p class="text-[11px] text-slate-500">
+              فعل يوم الراحة لحماية سلسلة الأيام بدون أي تأُثير سلبي.
+            </p>
+          </div>
+          <button
+            onclick="toggleRestDay()"
+            id="rest-day-btn"
+            class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-3 py-1.5 rounded-lg text-xs transition"
+          >
+            <i class="fa-solid fa-snowflake me-1"></i> تفعيل يوم راحة
+          </button>
+        </div>
+
+        <!-- NEW MEMORIZATION SECTION -->
+        <div
+          class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4"
+        >
+          <div
+            class="flex justify-between items-center border-b pb-3 border-slate-100"
+          >
+            <h3
+              class="font-bold text-base text-slate-800 flex items-center gap-2"
+            >
+              <i class="fa-solid fa-plus-circle text-brand-600"></i> ورد الحفظ
+              الجديد (اختيار عدة سور)
+            </h3>
+            <button
+              onclick="toggleFridayOverride()"
+              id="friday-override-btn"
+              class="hidden text-xs bg-amber-100 text-amber-800 font-bold px-2.5 py-1 rounded-lg border border-amber-300"
+            >
+              فتح الحفظ الجديد يوم الجمعة 🔓
+            </button>
+          </div>
+
+          <div
+            id="friday-lock-msg"
+            class="hidden bg-emerald-50 border border-emerald-200 p-3 rounded-xl text-xs text-emerald-800 font-bold text-center"
+          >
+            🍃 اليوم الجمعة مغلق فيه الحفظ الجديد تلقائياً لتفريغ الوقت لمراجعة
+            سور الأسبوع الشاملة.
+          </div>
+
+          <!-- Multi-Surah Selector -->
+          <div id="new-memorization-controls" class="space-y-3">
+            <div class="flex flex-wrap gap-2 items-center">
+              <select
+                id="multi-surah-select"
+                class="text-xs p-2 border border-slate-300 rounded-lg font-bold bg-white flex-1"
+              >
+                <!-- Rendered by JS -->
+              </select>
+              <button
+                onclick="addSurahToNewList()"
+                class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-3 py-2 rounded-lg text-xs transition"
+              >
+                + إضافة لقائمة الحفظ
+              </button>
+            </div>
+
+            <!-- Pending New Surahs Checklist -->
+            <div id="pending-new-surahs-list" class="space-y-2 pt-2">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+
+          <!-- Audio Player -->
+          <div
+            class="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2"
+          >
+            <div class="flex justify-between items-center">
+              <span class="text-xs font-bold text-slate-700"
+                ><i class="fa-solid fa-headphones text-brand-600 me-1"></i>
+                استمع قبل الحفظ:</span
+              >
+              <select
+                id="reciter-select"
+                onchange="reloadAudio()"
+                class="text-xs bg-white border border-slate-300 rounded-lg px-2 py-1 font-semibold"
+              >
+                <option value="ar.husary">الحصري (معلم)</option>
+                <option value="ar.alafasy">العفاسي</option>
+                <option value="ar.minshawi">المنشاوي</option>
+                <option value="ar.abdulbasitmurattal">عبد الباسط</option>
+              </select>
+            </div>
+            <audio
+              id="quran-audio-player"
+              controls
+              class="w-full h-8 rounded-lg"
+            ></audio>
+          </div>
+        </div>
+
+        <!-- DAILY & WEEKLY REVIEW SECTION -->
+        <div
+          class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4"
+        >
+          <div
+            class="flex justify-between items-center border-b pb-3 border-slate-100"
+          >
+            <h3
+              class="font-bold text-base text-slate-800 flex items-center gap-2"
+            >
+              <i class="fa-solid fa-rotate-right text-amber-600"></i> جدول
+              مراجعة السور (سورة بسورة)
+            </h3>
+            <span
+              id="review-type-badge"
+              class="bg-amber-100 text-amber-900 text-[11px] font-bold px-2.5 py-0.5 rounded-full"
+            >
+              مراجعة حفظ أمس
+            </span>
+          </div>
+
+          <p class="text-xs text-slate-500">
+            كل سورة تنهي مراجعتها اضغط على زر التميك بجانبها لتحويل حالتها إلى
+            "تمت المراجعة ✨".
+          </p>
+
+          <!-- Multi-Surah Review List -->
+          <div id="pending-review-surahs-list" class="space-y-2">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Complete 114 Surahs Color-Coded Map -->
+        <div
+          class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-3"
+        >
+          <div class="flex flex-wrap justify-between items-center gap-2">
+            <h3 class="font-bold text-base text-slate-800">
+              خريطة سور القرآن (تأثير ملوّن للحفظ والمراجعة)
+            </h3>
+            <input
+              type="text"
+              id="surah-search"
+              oninput="filterSurahs()"
+              placeholder="بحث باسم السورة..."
+              class="text-xs border border-slate-300 rounded-lg px-3 py-1.5 w-48"
+            />
+          </div>
+
+          <!-- Legend -->
+          <div
+            class="flex flex-wrap gap-3 text-[11px] font-bold pt-1 border-b pb-2"
+          >
+            <div class="flex items-center gap-1.5">
+              <span
+                class="w-3 h-3 rounded bg-slate-100 border border-slate-300"
+              ></span>
+              لم تبدأ
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span
+                class="w-3 h-3 rounded bg-amber-200 border border-amber-400"
+              ></span>
+              تم حفظها 📖
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span
+                class="w-3 h-3 rounded bg-emerald-500 border border-emerald-600"
+              ></span>
+              تم حفظها ومراجعتها ✨
+            </div>
+          </div>
+
+          <div
+            id="surahs-grid"
+            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5 max-h-80 overflow-y-auto p-1"
+          >
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: PRAYERS & SUNNAH -->
+      <div id="tab-prayer" class="hidden space-y-6 fade-in">
+        <div
+          class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4"
+        >
+          <div
+            class="flex justify-between items-center border-b pb-3 border-slate-100"
+          >
+            <h3
+              class="font-bold text-base text-slate-800 flex items-center gap-2"
+            >
+              <i class="fa-solid fa-mosque text-brand-600"></i> الصلوات الخمس
+              والسنن الراتبة
+            </h3>
+            <span
+              id="prayer-date-label"
+              class="text-xs text-slate-500 font-bold"
+              >يتجدد تلقائياً يومياً</span
+            >
+          </div>
+
+          <div
+            class="grid gap-3 md:grid-cols-5 sm:grid-cols-2"
+            id="prayers-container"
+          >
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: WEEKLY REPORT & COMPARISON -->
+      <div id="tab-report" class="hidden space-y-6 fade-in">
+        <div
+          class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4"
+        >
+          <h3
+            class="font-bold text-base text-slate-800 border-b pb-3 border-slate-100 flex items-center gap-2"
+          >
+            <i class="fa-solid fa-chart-pie text-brand-600"></i> ملخص تقرير
+            الأسبوع والمقارنة
+          </h3>
+
+          <div class="grid md:grid-cols-3 gap-3 text-center">
+            <div class="bg-amber-50 border border-amber-200 p-3 rounded-xl">
+              <span class="text-xs font-bold text-amber-800 block"
+                >سور تم حفظها مؤخراً</span
+              >
+              <span
+                id="report-saved-count"
+                class="text-xl font-extrabold text-amber-700"
+                >0</span
+              >
+            </div>
+            <div class="bg-brand-50 border border-brand-200 p-3 rounded-xl">
+              <span class="text-xs font-bold text-brand-800 block"
+                >سور تمت مراجعتها بالكامل</span
+              >
+              <span
+                id="report-reviewed-count"
+                class="text-xl font-extrabold text-brand-700"
+                >0</span
+              >
+            </div>
+            <div class="bg-blue-50 border border-blue-200 p-3 rounded-xl">
+              <span class="text-xs font-bold text-blue-800 block"
+                >التزام الصلوات والسنن</span
+              >
+              <span
+                id="report-prayers-percent"
+                class="text-xl font-extrabold text-blue-700"
+                >0%</span
+              >
+            </div>
+          </div>
+
+          <!-- Breakdown & Advice -->
+          <div
+            class="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-2 text-xs leading-relaxed"
+          >
+            <h4 class="font-bold text-slate-800 text-sm">
+              <i class="fa-solid fa-comment-dots text-brand-600 me-1"></i>
+              ملاحظات وتقييم الأسبوع:
+            </h4>
+            <p id="report-advice-text" class="text-slate-600">
+              جاري حساب البيانات المقارنة لأدائك...
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: SETTINGS -->
+      <div id="tab-settings" class="hidden space-y-6 fade-in">
+        <div
+          class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4"
+        >
+          <h3
+            class="font-bold text-base text-slate-800 border-b pb-3 border-slate-100"
+          >
+            الإعدادات وتصنيفات رمضان
+          </h3>
+
+          <div
+            class="flex items-center justify-between bg-amber-50 border border-amber-200 p-3 rounded-xl"
+          >
+            <div>
+              <h4 class="font-bold text-xs text-amber-900">
+                تجربة وضع رمضان (صلاة التراويح)
+              </h4>
+              <p class="text-[11px] text-amber-800">
+                تفعيل/إيقاف ظهور صلاة التراويح يدوياً.
+              </p>
+            </div>
+            <button
+              onclick="toggleRamadanTest()"
+              id="ramadan-toggle-btn"
+              class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs transition"
+            >
+              تفعيل التراويح
+            </button>
+          </div>
+
+          <div class="flex flex-wrap gap-3 pt-2">
+            <button
+              onclick="exportData()"
+              class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-3.5 py-2 rounded-xl text-xs transition flex items-center gap-2"
+            >
+              <i class="fa-solid fa-download"></i> تصدير نسخة احتياطية (JSON)
+            </button>
+
+            <label
+              class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3.5 py-2 rounded-xl text-xs transition cursor-pointer flex items-center gap-2"
+            >
+              <i class="fa-solid fa-upload"></i> استيراد نسخة
+              <input
+                type="file"
+                id="import-file"
+                onchange="importData(event)"
+                class="hidden"
+                accept=".json"
+              />
+            </label>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // FULL 114 SURAHS DATA
+      const ALL_SURAHS = [
+        { id: 1, name: "الفاتحة", verses: 7 },
+        { id: 2, name: "البقرة", verses: 286 },
+        { id: 3, name: "آل عمران", verses: 200 },
+        { id: 4, name: "النساء", verses: 176 },
+        { id: 5, name: "المائدة", verses: 120 },
+        { id: 6, name: "الأنعام", verses: 165 },
+        { id: 7, name: "الأعراف", verses: 206 },
+        { id: 8, name: "الأنفال", verses: 75 },
+        { id: 9, name: "التوبة", verses: 129 },
+        { id: 10, name: "يونس", verses: 109 },
+        { id: 11, name: "هود", verses: 123 },
+        { id: 12, name: "يوسف", verses: 111 },
+        { id: 13, name: "الرعد", verses: 43 },
+        { id: 14, name: "إبراهيم", verses: 52 },
+        { id: 15, name: "الحجر", verses: 99 },
+        { id: 16, name: "النحل", verses: 128 },
+        { id: 17, name: "الإسراء", verses: 111 },
+        { id: 18, name: "الكهف", verses: 110 },
+        { id: 19, name: "مريم", verses: 98 },
+        { id: 20, name: "طه", verses: 135 },
+        { id: 21, name: "الأنبياء", verses: 112 },
+        { id: 22, name: "الحج", verses: 78 },
+        { id: 23, name: "المؤمنون", verses: 118 },
+        { id: 24, name: "النور", verses: 64 },
+        { id: 25, name: "الفرقان", verses: 77 },
+        { id: 26, name: "الشعراء", verses: 227 },
+        { id: 27, name: "النمل", verses: 93 },
+        { id: 28, name: "القصص", verses: 88 },
+        { id: 29, name: "العنكبوت", verses: 69 },
+        { id: 30, name: "الروم", verses: 60 },
+        { id: 31, name: "لقمان", verses: 34 },
+        { id: 32, name: "السجدة", verses: 30 },
+        { id: 33, name: "الأحزاب", verses: 73 },
+        { id: 34, name: "سبأ", verses: 54 },
+        { id: 35, name: "فاطر", verses: 45 },
+        { id: 36, name: "يس", verses: 83 },
+        { id: 37, name: "الصافات", verses: 182 },
+        { id: 38, name: "ص", verses: 88 },
+        { id: 39, name: "الزمر", verses: 75 },
+        { id: 40, name: "غافر", verses: 85 },
+        { id: 41, name: "فصلت", verses: 54 },
+        { id: 42, name: "الشورى", verses: 53 },
+        { id: 43, name: "الزخرف", verses: 89 },
+        { id: 44, name: "الدخان", verses: 59 },
+        { id: 45, name: "الجاثية", verses: 37 },
+        { id: 46, name: "الأحقاف", verses: 35 },
+        { id: 47, name: "محمد", verses: 38 },
+        { id: 48, name: "الفتح", verses: 29 },
+        { id: 49, name: "الحجرات", verses: 18 },
+        { id: 50, name: "ق", verses: 45 },
+        { id: 51, name: "الذاريات", verses: 60 },
+        { id: 52, name: "الطور", verses: 49 },
+        { id: 53, name: "النجم", verses: 62 },
+        { id: 54, name: "القمر", verses: 55 },
+        { id: 55, name: "الرحمن", verses: 78 },
+        { id: 56, name: "الواقعة", verses: 96 },
+        { id: 57, name: "الحديد", verses: 29 },
+        { id: 58, name: "المجادلة", verses: 22 },
+        { id: 59, name: "الحشر", verses: 24 },
+        { id: 60, name: "الممتحنة", verses: 13 },
+        { id: 61, name: "الصف", verses: 14 },
+        { id: 62, name: "الجمعة", verses: 11 },
+        { id: 63, name: "المنافقون", verses: 11 },
+        { id: 64, name: "التغابن", verses: 18 },
+        { id: 65, name: "الطلاق", verses: 12 },
+        { id: 66, name: "التحريم", verses: 12 },
+        { id: 67, name: "الملك", verses: 30 },
+        { id: 68, name: "القلم", verses: 52 },
+        { id: 69, name: "الحاقة", verses: 52 },
+        { id: 70, name: "المعارج", verses: 44 },
+        { id: 71, name: "نوح", verses: 28 },
+        { id: 72, name: "الجن", verses: 28 },
+        { id: 73, name: "المزمل", verses: 20 },
+        { id: 74, name: "المدثر", verses: 56 },
+        { id: 75, name: "القيامة", verses: 40 },
+        { id: 76, name: "الإنسان", verses: 31 },
+        { id: 77, name: "المرسلات", verses: 50 },
+        { id: 78, name: "النبأ", verses: 40 },
+        { id: 79, name: "النازعات", verses: 46 },
+        { id: 80, name: "عبس", verses: 42 },
+        { id: 81, name: "التكوير", verses: 29 },
+        { id: 82, name: "الانفطار", verses: 19 },
+        { id: 83, name: "المطففين", verses: 36 },
+        { id: 84, name: "الانشقاق", verses: 25 },
+        { id: 85, name: "البروج", verses: 22 },
+        { id: 86, name: "الطارق", verses: 17 },
+        { id: 87, name: "الأعلى", verses: 19 },
+        { id: 88, name: "الغاشية", verses: 26 },
+        { id: 89, name: "الفجر", verses: 30 },
+        { id: 90, name: "البلد", verses: 20 },
+        { id: 91, name: "الشمس", verses: 15 },
+        { id: 92, name: "الليل", verses: 21 },
+        { id: 93, name: "الضحى", verses: 11 },
+        { id: 94, name: "الشرح", verses: 8 },
+        { id: 95, name: "التين", verses: 8 },
+        { id: 96, name: "العلق", verses: 19 },
+        { id: 97, name: "القدر", verses: 5 },
+        { id: 98, name: "البينة", verses: 8 },
+        { id: 99, name: "الزلزلة", verses: 8 },
+        { id: 100, name: "العاديات", verses: 11 },
+        { id: 101, name: "القارعة", verses: 11 },
+        { id: 102, name: "التكاثر", verses: 8 },
+        { id: 103, name: "العصر", verses: 3 },
+        { id: 104, name: "الهمزة", verses: 9 },
+        { id: 105, name: "الفيل", verses: 5 },
+        { id: 106, name: "قريش", verses: 4 },
+        { id: 107, name: "الماعون", verses: 7 },
+        { id: 108, name: "الكوثر", verses: 3 },
+        { id: 109, name: "الكافرون", verses: 6 },
+        { id: 110, name: "النصر", verses: 3 },
+        { id: 111, name: "المسد", verses: 5 },
+        { id: 112, name: "الإخلاص", verses: 4 },
+        { id: 113, name: "الفلق", verses: 5 },
+        { id: 114, name: "الناس", verses: 6 },
+      ];
+
+      const QUOTES = [
+        {
+          text: "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ",
+          sub: "حديث شريف - رواه البخاري",
+        },
+        {
+          text: "إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوُقُوتًا",
+          sub: "سورة النساء - آية 103",
+        },
+        {
+          text: "قَلِيلٌ دَائِمٌ خَيْرٌ مِنْ كَثِيرٍ مُنْقَطِعٍ",
+          sub: "حكمة مباركة",
+        },
+      ];
+
+      let state = {
+        streak: 0,
+        savedSurahIds: [], // Surahs memorized (Amber)
+        reviewedSurahIds: [], // Surahs memorized AND reviewed (Green)
+        pendingNewSurahs: [114], // Default Surah An-Nas in today's new list
+        pendingReviewSurahs: [], // Review queue for today
+        weeklySavedSurahs: [], // Surahs saved this week for Friday review
+        isRestDay: false,
+        isRamadanTest: false,
+        fridayOverride: false,
+        lastDateSaved: new Date().toISOString().slice(0, 10),
+        prayers: {
+          Fajr: "pending",
+          Dhuhr: "pending",
+          Asr: "pending",
+          Maghrib: "pending",
+          Isha: "pending",
+          Tarawih: "pending",
+        },
+        sunnahs: {
+          Fajr: false,
+          Dhuhr: false,
+          Asr: false,
+          Maghrib: false,
+          Isha: false,
+        },
+      };
+
+      function init() {
+        const saved = localStorage.getItem("quran_app_state_v3");
+        if (saved) {
+          try {
+            state = { ...state, ...JSON.parse(saved) };
+          } catch (e) {}
+        }
+
+        checkDailyReset();
+        populateSurahDropdown();
+        setupHijriDate();
+        renderAll();
+      }
+
+      function saveState() {
+        localStorage.setItem("quran_app_state_v3", JSON.stringify(state));
+        renderAll();
+      }
+
+      function checkDailyReset() {
+        const todayStr = new Date().toISOString().slice(0, 10);
+        if (state.lastDateSaved !== todayStr) {
+          // Move today's newly memorized surahs into pending review for tomorrow
+          state.pendingReviewSurahs = [
+            ...new Set([
+              ...state.pendingReviewSurahs,
+              ...state.pendingNewSurahs.filter((id) =>
+                state.savedSurahIds.includes(id),
+              ),
+            ]),
+          ];
+
+          // Friday check
+          const isFriday = new Date().getDay() === 5;
+          if (isFriday) {
+            // Add all surahs saved during the week to review queue on Friday
+            state.pendingReviewSurahs = [
+              ...new Set([
+                ...state.pendingReviewSurahs,
+                ...state.weeklySavedSurahs,
+              ]),
+            ];
+          }
+
+          // Reset daily prayer states
+          state.prayers = {
+            Fajr: "pending",
+            Dhuhr: "pending",
+            Asr: "pending",
+            Maghrib: "pending",
+            Isha: "pending",
+            Tarawih: "pending",
+          };
+          state.sunnahs = {
+            Fajr: false,
+            Dhuhr: false,
+            Asr: false,
+            Maghrib: false,
+            Isha: false,
+          };
+          state.lastDateSaved = todayStr;
+          saveState();
+        }
+      }
+
+      function populateSurahDropdown() {
+        const select = document.getElementById("multi-surah-select");
+        select.innerHTML = "";
+        ALL_SURAHS.forEach((s) => {
+          select.innerHTML += `<option value="${s.id}">${s.id}. سورة ${s.name} (${s.verses} آية)</option>`;
+        });
+        select.value = 113; // Default Falak
+      }
+
+      function setupHijriDate() {
+        try {
+          const today = new Date();
+          const options = {
+            calendar: "islamic-umalqura",
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          };
+          const hijri = new Intl.DateTimeFormat(
+            "ar-SA-u-ca-islamic-umalqura",
+            options,
+          ).format(today);
+          document.getElementById("hijri-date-display").innerText = hijri;
+
+          const isFriday = today.getDay() === 5;
+          if (isFriday) {
+            document.getElementById("friday-banner").classList.remove("hidden");
+            document
+              .getElementById("friday-override-btn")
+              .classList.remove("hidden");
+
+            if (!state.fridayOverride) {
+              document
+                .getElementById("friday-lock-msg")
+                .classList.remove("hidden");
+              document
+                .getElementById("new-memorization-controls")
+                .classList.add("opacity-40", "pointer-events-none");
+            } else {
+              document
+                .getElementById("friday-lock-msg")
+                .classList.add("hidden");
+              document
+                .getElementById("new-memorization-controls")
+                .classList.remove("opacity-40", "pointer-events-none");
+            }
+            document.getElementById("review-type-badge").innerText =
+              "مراجعة أسبوعية شاملة (يوم الجمعة)";
+          } else {
+            document.getElementById("friday-banner").classList.add("hidden");
+            document.getElementById("friday-lock-msg").classList.add("hidden");
+            document
+              .getElementById("new-memorization-controls")
+              .classList.remove("opacity-40", "pointer-events-none");
+            document.getElementById("review-type-badge").innerText =
+              "مراجعة حفظ أمس";
+          }
+
+          if (hijri.includes("رمضان") || state.isRamadanTest) {
+            document.getElementById("ramadan-badge").classList.remove("hidden");
+          } else {
+            document.getElementById("ramadan-badge").classList.add("hidden");
+          }
+        } catch (e) {
+          document.getElementById("hijri-date-display").innerText =
+            "تاريخ اليوم المبارك";
+        }
+      }
+
+      function renderAll() {
+        document.getElementById("streak-counter").innerText = state.streak;
+
+        renderPendingNewSurahs();
+        renderPendingReviewSurahs();
+        renderSurahsGrid();
+        renderPrayersSection();
+        renderReportSection();
+      }
+
+      function addSurahToNewList() {
+        const id = parseInt(
+          document.getElementById("multi-surah-select").value,
+        );
+        if (!state.pendingNewSurahs.includes(id)) {
+          state.pendingNewSurahs.push(id);
+          saveState();
+        }
+      }
+
+      function renderPendingNewSurahs() {
+        const list = document.getElementById("pending-new-surahs-list");
+        list.innerHTML = "";
+
+        if (state.pendingNewSurahs.length === 0) {
+          list.innerHTML =
+            '<p class="text-xs text-slate-400 italic">لا توجد سور محددة للحفظ اليوم.</p>';
+          return;
+        }
+
+        state.pendingNewSurahs.forEach((id) => {
+          const s = ALL_SURAHS.find((item) => item.id === id);
+          const isSaved = state.savedSurahIds.includes(id);
+
+          list.innerHTML += `
+          <div class="flex items-center justify-between p-2.5 rounded-xl border text-xs ${isSaved ? "bg-amber-50 border-amber-300 text-amber-900 font-bold" : "bg-slate-50 border-slate-200"}">
+            <span>#${s.id} سورة ${s.name} (${s.verses} آية)</span>
+            <div class="flex items-center gap-2">
+              <button onclick="toggleSurahSaved(${s.id})" class="px-2.5 py-1 rounded-lg font-bold text-[11px] ${isSaved ? "bg-amber-600 text-white" : "bg-white border text-slate-700 hover:bg-slate-100"}">
+                ${isSaved ? "تم حفظها 📖" : "تعليم كـ حُفظت 📖"}
+              </button>
+              <button onclick="removePendingNew(${s.id})" class="text-slate-400 hover:text-red-500"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+        `;
+        });
+      }
+
+      function toggleSurahSaved(id) {
+        if (state.savedSurahIds.includes(id)) {
+          state.savedSurahIds = state.savedSurahIds.filter(
+            (item) => item !== id,
+          );
+        } else {
+          state.savedSurahIds.push(id);
+          if (!state.weeklySavedSurahs.includes(id))
+            state.weeklySavedSurahs.push(id);
+          state.streak += 1;
+        }
+        saveState();
+      }
+
+      function removePendingNew(id) {
+        state.pendingNewSurahs = state.pendingNewSurahs.filter(
+          (item) => item !== id,
+        );
+        saveState();
+      }
+
+      function renderPendingReviewSurahs() {
+        const list = document.getElementById("pending-review-surahs-list");
+        list.innerHTML = "";
+
+        if (state.pendingReviewSurahs.length === 0) {
+          list.innerHTML =
+            '<p class="text-xs text-slate-400 italic">لا توجد سور في قائمة المراجعة حالياً.</p>';
+          return;
+        }
+
+        state.pendingReviewSurahs.forEach((id) => {
+          const s = ALL_SURAHS.find((item) => item.id === id);
+          const isReviewed = state.reviewedSurahIds.includes(id);
+
+          list.innerHTML += `
+          <div class="flex items-center justify-between p-2.5 rounded-xl border text-xs ${isReviewed ? "bg-emerald-50 border-emerald-300 text-emerald-900 font-bold" : "bg-slate-50 border-slate-200"}">
+            <span>#${s.id} سورة ${s.name} (${s.verses} آية)</span>
+            <button onclick="toggleSurahReviewed(${s.id})" class="px-3 py-1 rounded-lg font-bold text-[11px] ${isReviewed ? "bg-emerald-600 text-white" : "bg-white border text-slate-700 hover:bg-slate-100"}">
+              ${isReviewed ? "تمت المراجعة ✨" : "تعليم كـ رُوجعت ✨"}
+            </button>
+          </div>
+        `;
+        });
+      }
+
+      function toggleSurahReviewed(id) {
+        if (state.reviewedSurahIds.includes(id)) {
+          state.reviewedSurahIds = state.reviewedSurahIds.filter(
+            (item) => item !== id,
+          );
+        } else {
+          state.reviewedSurahIds.push(id);
+        }
+        saveState();
+      }
+
+      function renderSurahsGrid() {
+        const grid = document.getElementById("surahs-grid");
+        grid.innerHTML = "";
+
+        ALL_SURAHS.forEach((s) => {
+          const isSaved = state.savedSurahIds.includes(s.id);
+          const isReviewed = state.reviewedSurahIds.includes(s.id);
+
+          let bg =
+            "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100";
+          let badge = "";
+
+          if (isReviewed) {
+            bg =
+              "bg-emerald-500 border-emerald-600 text-white font-bold shadow-sm";
+            badge =
+              '<span class="block text-[9px] text-emerald-100">مراجعة ✨</span>';
+          } else if (isSaved) {
+            bg = "bg-amber-200 border-amber-400 text-amber-950 font-bold";
+            badge =
+              '<span class="block text-[9px] text-amber-800">حُفظت 📖</span>';
+          }
+
+          grid.innerHTML += `
+          <div onclick="selectSurahDirectly(${s.id})" class="border rounded-xl p-2 text-center text-xs transition cursor-pointer ${bg}">
+            <div class="text-[10px] opacity-75">#${s.id}</div>
+            <div class="text-xs font-bold my-0.5">سورة ${s.name}</div>
+            ${badge}
+          </div>
+        `;
+        });
+      }
+
+      function selectSurahDirectly(id) {
+        document.getElementById("multi-surah-select").value = id;
+        addSurahToNewList();
+        window.scrollTo({ top: 150, behavior: "smooth" });
+      }
+
+      function renderPrayersSection() {
+        const container = document.getElementById("prayers-container");
+        container.innerHTML = "";
+
+        let list = [
+          { key: "Fajr", name: "الفجر", sunnahText: "2 ركعة قبلية" },
+          { key: "Dhuhr", name: "الظهر", sunnahText: "4 قبلية + 2 بعدية" },
+          { key: "Asr", name: "العصر", sunnahText: "لا توجد سنة مؤكدة" },
+          { key: "Maghrib", name: "المغرب", sunnahText: "2 ركعة بعدية" },
+          { key: "Isha", name: "العشاء", sunnahText: "2 بعدية + الوتر" },
+        ];
+
+        if (
+          state.isRamadanTest ||
+          document
+            .getElementById("hijri-date-display")
+            .innerText.includes("رمضان")
+        ) {
+          list.push({
+            key: "Tarawih",
+            name: "التراويح 🌙",
+            sunnahText: "سُنّة رمضان",
+          });
+        }
+
+        list.forEach((p) => {
+          const status = state.prayers[p.key] || "pending";
+          const sunnahDone = state.sunnahs[p.key] || false;
+          const isDone = status !== "pending";
+
+          container.innerHTML += `
+          <div class="border rounded-xl p-3 flex flex-col justify-between text-center ${isDone ? "bg-brand-50 border-brand-200" : "bg-slate-50 border-slate-200"}">
+            <div>
+              <span class="font-bold text-xs block text-slate-800">${p.name}</span>
+              <span class="text-[10px] text-amber-800 block my-1 bg-amber-100/70 rounded px-1">${p.sunnahText}</span>
+            </div>
+
+            <div class="mt-2 flex flex-col gap-1">
+              <button onclick="setPrayer('${p.key}', 'mosque')" class="text-[10px] py-1 px-1.5 rounded font-bold ${status === "mosque" ? "bg-brand-600 text-white" : "bg-white border text-slate-600"}">
+                في المسجد 🕌
+              </button>
+              <button onclick="setPrayer('${p.key}', 'ontime')" class="text-[10px] py-1 px-1.5 rounded font-bold ${status === "ontime" ? "bg-brand-500 text-white" : "bg-white border text-slate-600"}">
+                في وقتها ✅
+              </button>
+              ${
+                p.key !== "Asr" && p.key !== "Tarawih"
+                  ? `
+                <button onclick="toggleSunnah('${p.key}')" class="mt-1 text-[10px] py-1 px-1.5 rounded font-bold ${sunnahDone ? "bg-amber-600 text-white" : "bg-amber-50 border border-amber-200 text-amber-800"}">
+                  ${sunnahDone ? "صليت السُنّة ✨" : "تسجيل السُنّة الراتبة"}
+                </button>
+              `
+                  : ""
+              }
+            </div>
+          </div>
+        `;
+        });
+      }
+
+      function toggleSunnah(key) {
+        state.sunnahs[key] = !state.sunnahs[key];
+        saveState();
+      }
+
+      function renderReportSection() {
+        document.getElementById("report-saved-count").innerText =
+          state.savedSurahIds.length;
+        document.getElementById("report-reviewed-count").innerText =
+          state.reviewedSurahIds.length;
+
+        let count = 0;
+        Object.values(state.prayers).forEach((v) => {
+          if (v !== "pending") count++;
+        });
+        const percent = Math.round((count / 5) * 100);
+        document.getElementById("report-prayers-percent").innerText =
+          `${percent}%`;
+
+        let advice =
+          "أداؤك ممتاز ومستمر! حافظ على مراجعة سور الأسبوع يوم الجمعة لضمان ثبات حفظك.";
+        document.getElementById("report-advice-text").innerText = advice;
+      }
+
+      function toggleFridayOverride() {
+        state.fridayOverride = !state.fridayOverride;
+        setupHijriDate();
+        saveState();
+      }
+
+      function toggleRestDay() {
+        state.isRestDay = !state.isRestDay;
+        const btn = document.getElementById("rest-day-btn");
+        if (state.isRestDay) {
+          btn.classList.add("bg-amber-500", "text-white");
+          alert("تم تفعيل يوم الراحة، سلسلة أيامك محمية الآن ❄️");
+        } else {
+          btn.classList.remove("bg-amber-500", "text-white");
+        }
+        saveState();
+      }
+
+      function toggleRamadanTest() {
+        state.isRamadanTest = !state.isRamadanTest;
+        setupHijriDate();
+        saveState();
+      }
+
+      function setPrayer(key, val) {
+        state.prayers[key] = state.prayers[key] === val ? "pending" : val;
+        saveState();
+      }
+
+      function reloadAudio() {
+        const surahId = parseInt(
+          document.getElementById("multi-surah-select").value,
+        );
+        const reciter = document.getElementById("reciter-select").value;
+        const audioPlayer = document.getElementById("quran-audio-player");
+        audioPlayer.src = `https://cdn.islamic.network/quran/audio-surah/128/${reciter}/${surahId}.mp3`;
+      }
+
+      let quoteIdx = 0;
+      function rotateQuote() {
+        quoteIdx = (quoteIdx + 1) % QUOTES.length;
+        document.getElementById("quote-text").innerText =
+          `"${QUOTES[quoteIdx].text}"`;
+        document.getElementById("quote-sub").innerText = QUOTES[quoteIdx].sub;
+      }
+
+      function switchTab(tabId) {
+        ["tab-quran", "tab-prayer", "tab-report", "tab-settings"].forEach(
+          (id) => {
+            document.getElementById(id).classList.add("hidden");
+          },
+        );
+        [
+          "btn-tab-quran",
+          "btn-tab-prayer",
+          "btn-tab-report",
+          "btn-tab-settings",
+        ].forEach((id) => {
+          const btn = document.getElementById(id);
+          btn.classList.remove("tab-btn-active");
+          btn.classList.add("bg-white", "text-slate-700");
+        });
+
+        document.getElementById(tabId).classList.remove("hidden");
+        const activeBtn = document.getElementById("btn-" + tabId);
+        activeBtn.classList.add("tab-btn-active");
+        activeBtn.classList.remove("bg-white", "text-slate-700");
+      }
+
+      function filterSurahs() {
+        const q = document.getElementById("surah-search").value.trim();
+        const grid = document.getElementById("surahs-grid");
+        Array.from(grid.children).forEach((el) => {
+          if (el.innerText.includes(q)) el.style.display = "block";
+          else el.style.display = "none";
+        });
+      }
+
+      function toggleKahfDone() {
+        alert("تقبل الله منك قراءة سورة الكهف ✨");
+        document.getElementById("kahf-btn").innerText = "تمت القراءة بنجاح ✅";
+      }
+
+      function exportData() {
+        const dataStr =
+          "data:text/json;charset=utf-8," +
+          encodeURIComponent(JSON.stringify(state));
+        const a = document.createElement("a");
+        a.href = dataStr;
+        a.download = `quran_tracker_backup_${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+      }
+
+      function importData(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function (evt) {
+          try {
+            state = JSON.parse(evt.target.result);
+            saveState();
+            alert("تم استرداد تقدمك بنجاح! ✅");
+          } catch (err) {
+            alert("ملف غير صالح.");
+          }
+        };
+        reader.readAsText(file);
+      }
+
+      window.onload = init;
+    </script>
+  </body>
+</html>
